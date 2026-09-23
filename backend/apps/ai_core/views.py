@@ -24,7 +24,7 @@ def _get_gemini_key():
     return key.strip() if key else ""
 
 
-def _gemini_post(model: str, payload: dict, key: str, timeout: int = 50):
+def _gemini_post(model: str, payload: dict, key: str, timeout: int = 15):
     """Llama a la API de Gemini y devuelve el objeto Response."""
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
     return req.post(url, json=payload, timeout=timeout)
@@ -47,10 +47,10 @@ def _parse_json_safe(text: str):
 
 # Modelos de Gemini disponibles (en orden de preferencia para visión)
 GEMINI_MODELS = [
+    "gemini-3-flash-preview",
+    "gemini-flash-latest",
     "gemini-flash-lite-latest",
-    "gemini-3.5-flash-lite",
     "gemini-3.1-flash-lite",
-    "gemini-3.5-flash",
 ]
 
 
@@ -144,7 +144,7 @@ def ai_suggest(request):
 
     for model in GEMINI_MODELS:
         try:
-            resp = _gemini_post(model, payload, gemini_key, timeout=30)
+            resp = _gemini_post(model, payload, gemini_key, timeout=15)
             if resp.status_code == 200:
                 _rdata = resp.json()
                 _parts = _rdata.get("candidates", [{}])[0].get("content", {}).get("parts", [])
@@ -240,7 +240,7 @@ def ai_help_chat(request):
     errors = []
     for model in GEMINI_MODELS:
         try:
-            resp = _gemini_post(model, payload, gemini_key, timeout=30)
+            resp = _gemini_post(model, payload, gemini_key, timeout=15)
             if resp.status_code == 200:
                 _rdata = resp.json()
                 _parts = _rdata.get("candidates", [{}])[0].get("content", {}).get("parts", [])

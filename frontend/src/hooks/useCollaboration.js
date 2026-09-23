@@ -27,10 +27,22 @@ const getColorForUser = (userId) => {
   return CURSOR_COLORS[hash % CURSOR_COLORS.length];
 };
 
-const defaultWs = typeof window !== 'undefined'
-  ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname}:8000`
-  : 'ws://localhost:8000';
-const WS_BASE = import.meta.env.VITE_WS_URL || defaultWs;
+const getWsBase = () => {
+  const envWs = import.meta.env.VITE_WS_URL;
+  if (typeof window !== 'undefined') {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    // Si estamos en un servidor remoto desplegado, conectar por el puerto del navegador (Nginx en 80 o 443)
+    if (!isLocalhost && (!envWs || envWs.includes('localhost') || envWs.includes('127.0.0.1'))) {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      return `${protocol}//${window.location.host}`;
+    }
+  }
+  return envWs || (typeof window !== 'undefined'
+    ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname}:8000`
+    : 'ws://localhost:8000');
+};
+
+const WS_BASE = getWsBase();
 const DEBOUNCE_MS = 300;       // ms de espera antes de enviar actualización de diagrama
 const CURSOR_THROTTLE_MS = 60; // ms mínimos entre envíos de cursor (~16 fps)
 const RECONNECT_DELAY_MS = 3000;

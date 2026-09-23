@@ -61,7 +61,12 @@ export default function HelpChatBot() {
         { role: 'assistant', content: res.data.reply, model: res.data.model },
       ]);
     } catch (err) {
-      const errMsg = err.response?.data?.detail || 'Error al conectar con el servidor.';
+      const errMsg = err.response?.data?.detail 
+        || (err.code === 'ECONNABORTED' ? 'Tiempo de espera agotado al conectar con la IA.' : null)
+        || (err.response?.status === 504 ? 'Tiempo de espera agotado en el servidor (504).' : null)
+        || (err.response?.status === 502 ? 'Servidor backend no disponible (502).' : null)
+        || (err.message && !err.message.includes('status code') ? err.message : null)
+        || 'Error al conectar con el servidor.';
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: `❌ ${errMsg}`, isError: true },
