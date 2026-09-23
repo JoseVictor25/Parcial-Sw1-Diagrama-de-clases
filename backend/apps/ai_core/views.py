@@ -47,10 +47,10 @@ def _parse_json_safe(text: str):
 
 # Modelos de Gemini disponibles (en orden de preferencia para visión)
 GEMINI_MODELS = [
+    "gemini-3.6-flash",
     "gemini-3-flash-preview",
     "gemini-flash-latest",
     "gemini-flash-lite-latest",
-    "gemini-3.1-flash-lite",
 ]
 
 
@@ -186,31 +186,13 @@ def ai_suggest(request):
 # --- Chatbot Guia de Usuario (UMLCraft Help Assistant) ---
 
 HELP_SYSTEM_PROMPT = (
-    "Eres el Asistente Oficial de UMLCraft. Tu mision es ayudar a los usuarios a usar la plataforma.\n\n"
-    "=== GUIA DE USO ===\n\n"
-    "1. LIENZO: Doble clic agrega una clase. Arrastra nodos para moverlos.\n"
-    "2. TOOLBOX: Boton Clase agrega nodo. Relaciones: Asociacion, Herencia, Composicion, Agregacion, Dependencia.\n"
-    "3. EDITAR CLASES: Clic en nodo abre propiedades. Tipos: String, Integer, Double, Boolean, LocalDate, LocalDateTime, BigDecimal. El campo id NO se agrega manualmente.\n"
-    "4. GUARDAR: Boton Guardar o Ctrl+S.\n"
-    "5. DESHACER/REHACER: Ctrl+Z / Ctrl+Y.\n"
-    "6. HISTORIAL: Ver y restaurar versiones anteriores del diagrama.\n"
-    "7. EXPORTAR PNG: Descarga imagen del diagrama.\n"
-    "8. COLABORADORES: Invitar usuarios a editar en tiempo real.\n"
-    "9. IMPORTAR IMAGEN: Sube foto de boceto UML y la IA lo convierte en clases.\n"
-    "10. XMI: Exportar/Importar compatible con Enterprise Architect.\n"
-    "11. ASISTENTE UML IA: Chat para sugerir mejoras o agregar/eliminar elementos.\n"
-    "12. GENERAR BACKEND: Boton azul genera .zip Spring Boot en 5 capas (Entity, DTO, Repository, Service, Controller).\n\n"
-    "PASOS PARA EJECUTAR EL BACKEND:\n"
-    "1. Descomprimir el .zip\n"
-    "2. Abrir carpeta en VSCode o IntelliJ\n"
-    "3. Editar application.properties con datos PostgreSQL:\n"
-    "   spring.datasource.url=jdbc:postgresql://localhost:5432/NOMBRE_BD\n"
-    "   spring.datasource.username=tu_usuario\n"
-    "   spring.datasource.password=tu_contrasena\n"
-    "4. Crear BD: CREATE DATABASE NOMBRE_BD;\n"
-    "5. Ejecutar: mvn spring-boot:run\n"
-    "6. API en http://localhost:8080 | Swagger: http://localhost:8080/swagger-ui.html\n\n"
-    "Responde siempre en espanol, de forma clara y didactica. Solo sobre UMLCraft y Spring Boot."
+    "Eres el Asistente Oficial de UMLCraft (editor UML y generador Spring Boot).\n"
+    "Guía rápida:\n"
+    "- LIENZO: Doble clic o Toolbox agrega clases. Arrastra puntos para conectar relaciones (asociación, herencia, composición, agregación, dependencia).\n"
+    "- EDITAR: Clic en nodo abre propiedades (atributos/métodos con tipos String, Integer, etc).\n"
+    "- BACKEND: Botón 'Generar Backend' crea un .zip Spring Boot con 5 capas (Entity, DTO, Repository, Service, Controller). Descomprimir, configurar PostgreSQL en application.properties y ejecutar con 'mvn spring-boot:run'.\n"
+    "- OTRAS FUNCIONES: Guardar (Ctrl+S), Historial, Exportar PNG, Colaboradores en tiempo real, Importar imagen UML.\n\n"
+    "Responde siempre en español de forma concisa, clara y didáctica."
 )
 
 
