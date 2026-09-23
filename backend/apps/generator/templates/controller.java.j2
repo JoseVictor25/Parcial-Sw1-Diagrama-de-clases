@@ -1,0 +1,71 @@
+package {{ base_package }}.controller;
+
+import {{ base_package }}.dto.{{ entity.name }}RequestDTO;
+import {{ base_package }}.dto.{{ entity.name }}ResponseDTO;
+import {{ base_package }}.service.{{ entity.name }}Service;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+/**
+ * Controlador REST para gestionar operaciones CRUD sobre {{ entity.name }}.
+ * Expone exclusivamente DTOs al exterior.
+ */
+@RestController
+@RequestMapping("/api/{{ entity.url_path }}")
+@CrossOrigin(origins = "*")
+public class {{ entity.name }}Controller {
+
+    private final {{ entity.name }}Service service;
+
+    public {{ entity.name }}Controller({{ entity.name }}Service service) {
+        this.service = service;
+    }
+
+    /**
+     * Listar todos los registros de {{ entity.name }}.
+     */
+    @GetMapping
+    public ResponseEntity<List<{{ entity.name }}ResponseDTO>> getAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    /**
+     * Obtener un registro por su ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<{{ entity.name }}ResponseDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
+    /**
+     * Crear un nuevo registro de {{ entity.name }}.
+     */
+    @PostMapping
+    public ResponseEntity<{{ entity.name }}ResponseDTO> create(@Valid @RequestBody {{ entity.name }}RequestDTO requestDTO) {
+        {{ entity.name }}ResponseDTO created = service.create(requestDTO);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    /**
+     * Actualizar un registro existente por ID.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<{{ entity.name }}ResponseDTO> update(
+        @PathVariable Long id,
+        @Valid @RequestBody {{ entity.name }}RequestDTO requestDTO
+    ) {
+        return ResponseEntity.ok(service.update(id, requestDTO));
+    }
+
+    /**
+     * Eliminar un registro por ID.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}

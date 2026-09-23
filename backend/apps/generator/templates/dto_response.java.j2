@@ -1,0 +1,82 @@
+package {{ base_package }}.dto;
+
+import java.io.Serializable;
+{% if entity.has_dates %}
+import java.time.LocalDate;
+{% endif %}
+{% if entity.has_datetimes %}
+import java.time.LocalDateTime;
+{% endif %}
+{% if entity.has_bigdecimals %}
+import java.math.BigDecimal;
+{% endif %}
+
+/**
+ * DTO de respuesta para representar {{ entity.name }}.
+ */
+public class {{ entity.name }}ResponseDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Long id;
+
+    // Atributos
+{% for attr in entity.attributes %}
+    {% if not attr.is_id %}
+    private {{ attr.java_type }} {{ attr.field_name }};
+    {% endif %}
+{% endfor %}
+
+    // Identificadores de relaciones
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+    private Long {{ rel.fk_id_field }};
+    private String {{ rel.fk_label_field }};
+    {% endif %}
+{% endfor %}
+
+    public {{ entity.name }}ResponseDTO() {
+    }
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+{% for attr in entity.attributes %}
+    {% if not attr.is_id %}
+    public {{ attr.java_type }} {{ attr.getter_name }}() {
+        return {{ attr.field_name }};
+    }
+
+    public void {{ attr.setter_name }}({{ attr.java_type }} {{ attr.field_name }}) {
+        this.{{ attr.field_name }} = {{ attr.field_name }};
+    }
+
+    {% endif %}
+{% endfor %}
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+    public Long {{ rel.fk_getter_name }}() {
+        return {{ rel.fk_id_field }};
+    }
+
+    public void {{ rel.fk_setter_name }}(Long {{ rel.fk_id_field }}) {
+        this.{{ rel.fk_id_field }} = {{ rel.fk_id_field }};
+    }
+
+    public String get{{ rel.fk_label_field|capitalize }}() {
+        return {{ rel.fk_label_field }};
+    }
+
+    public void set{{ rel.fk_label_field|capitalize }}(String {{ rel.fk_label_field }}) {
+        this.{{ rel.fk_label_field }} = {{ rel.fk_label_field }};
+    }
+
+    {% endif %}
+{% endfor %}
+}

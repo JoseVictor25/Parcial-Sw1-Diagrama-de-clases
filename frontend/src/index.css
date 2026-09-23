@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-dark: #111827;
+  --bg-panel: #1f2937;
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --danger: #ef4444;
+  --success: #10b981;
+  --border-color: #374151;
+  --glass-bg: #1f2937;
+  --glass-border: #374151;
+  --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 12px;
+}
+
+/* Form Elements */
+.input-field {
+  width: 100%;
+  padding: 10px 14px;
+  background: #111827;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* Layouts */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+}
+
+/* React Flow Customizations */
+.react-flow__node {
+  border-radius: 8px;
+}
+
+.react-flow__handle {
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  height: 60px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-dark);
+  z-index: 10;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.project-card {
+  padding: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.diagram-container {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-panel {
+  width: 290px;
+  min-width: 290px;
+  background: #252526;
+  border-left: 1px solid #333333;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  color: #cccccc;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 11px;
+}
+
+.sidebar-panel .input-field {
+  background: #1e1e1e;
+  border: 1px solid #3c3c3c;
+  color: #cccccc;
+  border-radius: 2px;
+  padding: 6px 8px;
+  font-size: 12px;
+  outline: none;
+}
+
+.sidebar-panel .input-field:focus {
+  border-color: #007acc;
+  box-shadow: 0 0 0 1px #007acc;
+}
+
+.sidebar-panel .btn {
+  border-radius: 2px;
+  font-size: 11px;
+  padding: 5px 10px;
+}
+
+.toolbar-panel {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  z-index: 5;
+  border-radius: 30px;
+}
+
+/* ── Handles UML visibles al hacer hover ── */
+.uml-class-node:hover .uml-handle,
+.react-flow__node:hover .uml-handle {
+  opacity: 1 !important;
+}
+
+.react-flow__handle-connecting .uml-handle,
+.react-flow__handle-valid .uml-handle {
+  opacity: 1 !important;
+}
+
+/* Override de handle por defecto de ReactFlow */
+.react-flow__handle {
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.react-flow__node:hover .react-flow__handle {
+  opacity: 1;
+}
+
+.react-flow__handle.react-flow__handle-connecting {
+  background: #22c55e !important;
+  opacity: 1;
+}
+
+.react-flow__handle.react-flow__handle-valid {
+  background: #22c55e !important;
+  opacity: 1;
+}
+
+/* Drag de atributos */
+.attr-row-dragging {
+  opacity: 0.5;
+  background: rgba(59, 130, 246, 0.15);
+  border-radius: 6px;
+}
+
+/* ── Tiradores de reconexión de aristas (invisibles para permitir mover sin mostrar círculos) ── */
+.react-flow__edgeupdater {
+  cursor: grab;
+  pointer-events: all;
+  fill: transparent !important;
+  stroke: transparent !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+.react-flow__edgeupdater:hover {
+  cursor: grab !important;
+  fill: transparent !important;
+  stroke: transparent !important;
+  filter: none !important;
+}
+
+.react-flow__edgeupdater:active {
+  cursor: grabbing !important;
+}
+
+/* Animación de carga para indicador de conexión WebSocket */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* StarUML Desktop Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+::-webkit-scrollbar-thumb {
+  background: #3e3e42;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4e4e52;
+}

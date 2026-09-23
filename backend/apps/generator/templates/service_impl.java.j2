@@ -1,0 +1,110 @@
+package {{ base_package }}.service.impl;
+
+import {{ base_package }}.entity.{{ entity.name }};
+import {{ base_package }}.dto.{{ entity.name }}RequestDTO;
+import {{ base_package }}.dto.{{ entity.name }}ResponseDTO;
+import {{ base_package }}.mapper.{{ entity.name }}Mapper;
+import {{ base_package }}.repository.{{ entity.name }}Repository;
+import {{ base_package }}.service.{{ entity.name }}Service;
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+import {{ base_package }}.repository.{{ rel.target_class }}Repository;
+    {% endif %}
+{% endfor %}
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+/**
+ * Implementación del servicio para {{ entity.name }}.
+ */
+@Service
+@Transactional
+public class {{ entity.name }}ServiceImpl implements {{ entity.name }}Service {
+
+    private final {{ entity.name }}Repository repository;
+    private final {{ entity.name }}Mapper mapper;
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+    private final {{ rel.target_class }}Repository {{ rel.target_class|lower }}Repository;
+    {% endif %}
+{% endfor %}
+
+    public {{ entity.name }}ServiceImpl(
+        {{ entity.name }}Repository repository,
+        {{ entity.name }}Mapper mapper{% for rel in entity.relationships %}{% if not rel.is_collection %},
+        {{ rel.target_class }}Repository {{ rel.target_class|lower }}Repository{% endif %}{% endfor %}
+    ) {
+        this.repository = repository;
+        this.mapper = mapper;
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+        this.{{ rel.target_class|lower }}Repository = {{ rel.target_class|lower }}Repository;
+    {% endif %}
+{% endfor %}
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<{{ entity.name }}ResponseDTO> findAll() {
+        return repository.findAll().stream()
+            .map(mapper::toResponseDTO)
+            .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public {{ entity.name }}ResponseDTO findById(Long id) {
+        return repository.findById(id)
+            .map(mapper::toResponseDTO)
+            .orElseThrow(() -> new NoSuchElementException("No se encontró {{ entity.name }} con id: " + id));
+    }
+
+    @Override
+    public {{ entity.name }}ResponseDTO create({{ entity.name }}RequestDTO requestDTO) {
+        {{ entity.name }} entity = mapper.toEntity(requestDTO);
+
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+        if (requestDTO.{{ rel.fk_getter_name }}() != null) {
+            {{ rel.target_class|lower }}Repository.findById(requestDTO.{{ rel.fk_getter_name }}())
+                .ifPresent(entity::{{ rel.setter_name }});
+        }
+    {% endif %}
+{% endfor %}
+
+        {{ entity.name }} saved = repository.save(entity);
+        return mapper.toResponseDTO(saved);
+    }
+
+    @Override
+    public {{ entity.name }}ResponseDTO update(Long id, {{ entity.name }}RequestDTO requestDTO) {
+        {{ entity.name }} existing = repository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No se encontró {{ entity.name }} con id: " + id));
+
+        mapper.updateEntityFromDTO(requestDTO, existing);
+
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+        if (requestDTO.{{ rel.fk_getter_name }}() != null) {
+            {{ rel.target_class|lower }}Repository.findById(requestDTO.{{ rel.fk_getter_name }}())
+                .ifPresent(existing::{{ rel.setter_name }});
+        } else {
+            existing.{{ rel.setter_name }}(null);
+        }
+    {% endif %}
+{% endfor %}
+
+        {{ entity.name }} updated = repository.save(existing);
+        return mapper.toResponseDTO(updated);
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (!repository.existsById(id)) {
+            throw new NoSuchElementException("No se encontró {{ entity.name }} con id: " + id);
+        }
+        repository.deleteById(id);
+    }
+}

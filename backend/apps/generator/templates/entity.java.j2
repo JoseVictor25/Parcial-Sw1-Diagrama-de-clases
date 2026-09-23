@@ -1,0 +1,125 @@
+package {{ base_package }}.entity;
+
+import jakarta.persistence.*;
+import java.io.Serializable;
+{% if entity.has_dates %}
+import java.time.LocalDate;
+{% endif %}
+{% if entity.has_datetimes %}
+import java.time.LocalDateTime;
+{% endif %}
+{% if entity.has_bigdecimals %}
+import java.math.BigDecimal;
+{% endif %}
+{% if entity.has_collections %}
+import java.util.List;
+import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+{% endif %}
+
+/**
+ * Entidad JPA para {{ entity.name }}.
+ * Tabla en BD: {{ entity.table_name }}
+ */
+@Entity
+@Table(name = "{{ entity.table_name }}")
+{% if entity.is_parent_in_inheritance %}
+@Inheritance(strategy = InheritanceType.JOINED)
+{% endif %}
+public class {{ entity.name }}{% if entity.parent_class %} extends {{ entity.parent_class }}{% endif %} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+{% if not entity.parent_class %}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+{% endif %}
+
+    // Atributos
+{% for attr in entity.attributes %}
+    {% if attr.is_id and not entity.parent_class %}
+    @Id
+    {% if attr.is_generated %}
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    {% endif %}
+    {% endif %}
+    @Column(name = "{{ attr.column_name }}")
+    private {{ attr.java_type }} {{ attr.field_name }};
+
+{% endfor %}
+    // Relaciones JPA
+{% for rel in entity.relationships %}
+    {% if rel.type == "ManyToOne" %}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "{{ rel.join_column }}")
+    private {{ rel.target_class }} {{ rel.field_name }};
+
+    {% elif rel.type == "OneToMany" %}
+    @OneToMany(mappedBy = "{{ rel.mapped_by }}", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<{{ rel.target_class }}> {{ rel.field_name }} = new ArrayList<>();
+
+    {% elif rel.type == "OneToOne" %}
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "{{ rel.join_column }}")
+    private {{ rel.target_class }} {{ rel.field_name }};
+
+    {% elif rel.type == "ManyToMany" %}
+    @ManyToMany
+    @JoinTable(
+        name = "{{ rel.join_table }}",
+        joinColumns = @JoinColumn(name = "{{ rel.join_column }}"),
+        inverseJoinColumns = @JoinColumn(name = "{{ rel.inverse_join_column }}")
+    )
+    @JsonIgnore
+    private List<{{ rel.target_class }}> {{ rel.field_name }} = new ArrayList<>();
+    {% endif %}
+{% endfor %}
+
+    // Constructores
+    public {{ entity.name }}() {
+    }
+
+    // Getters y Setters
+{% if not entity.parent_class and not entity.has_custom_id %}
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+{% endif %}
+{% for attr in entity.attributes %}
+    public {{ attr.java_type }} {{ attr.getter_name }}() {
+        return {{ attr.field_name }};
+    }
+
+    public void {{ attr.setter_name }}({{ attr.java_type }} {{ attr.field_name }}) {
+        this.{{ attr.field_name }} = {{ attr.field_name }};
+    }
+
+{% endfor %}
+{% for rel in entity.relationships %}
+    {% if rel.is_collection %}
+    public List<{{ rel.target_class }}> {{ rel.getter_name }}() {
+        return {{ rel.field_name }};
+    }
+
+    public void {{ rel.setter_name }}(List<{{ rel.target_class }}> {{ rel.field_name }}) {
+        this.{{ rel.field_name }} = {{ rel.field_name }};
+    }
+    {% else %}
+    public {{ rel.target_class }} {{ rel.getter_name }}() {
+        return {{ rel.field_name }};
+    }
+
+    public void {{ rel.setter_name }}({{ rel.target_class }} {{ rel.field_name }}) {
+        this.{{ rel.field_name }} = {{ rel.field_name }};
+    }
+    {% endif %}
+
+{% endfor %}
+}

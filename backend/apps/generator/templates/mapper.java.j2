@@ -1,0 +1,75 @@
+package {{ base_package }}.mapper;
+
+import {{ base_package }}.entity.{{ entity.name }};
+import {{ base_package }}.dto.{{ entity.name }}RequestDTO;
+import {{ base_package }}.dto.{{ entity.name }}ResponseDTO;
+import org.springframework.stereotype.Component;
+
+/**
+ * Mapper para convertir entre la entidad {{ entity.name }} y sus DTOs.
+ */
+@Component
+public class {{ entity.name }}Mapper {
+
+    /**
+     * Convierte una entidad {{ entity.name }} a {{ entity.name }}ResponseDTO.
+     */
+    public {{ entity.name }}ResponseDTO toResponseDTO({{ entity.name }} entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        {{ entity.name }}ResponseDTO dto = new {{ entity.name }}ResponseDTO();
+        dto.setId(entity.getId());
+
+{% for attr in entity.attributes %}
+    {% if not attr.is_id %}
+        dto.{{ attr.setter_name }}(entity.{{ attr.getter_name }}());
+    {% endif %}
+{% endfor %}
+
+{% for rel in entity.relationships %}
+    {% if not rel.is_collection %}
+        if (entity.{{ rel.getter_name }}() != null) {
+            dto.{{ rel.fk_setter_name }}(entity.{{ rel.getter_name }}().getId());
+            dto.set{{ rel.fk_label_field|capitalize }}(entity.{{ rel.getter_name }}().toString());
+        }
+    {% endif %}
+{% endfor %}
+
+        return dto;
+    }
+
+    /**
+     * Convierte un {{ entity.name }}RequestDTO a una nueva entidad {{ entity.name }}.
+     */
+    public {{ entity.name }} toEntity({{ entity.name }}RequestDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        {{ entity.name }} entity = new {{ entity.name }}();
+{% for attr in entity.attributes %}
+    {% if not attr.is_id or not attr.is_generated %}
+        entity.{{ attr.setter_name }}(dto.{{ attr.getter_name }}());
+    {% endif %}
+{% endfor %}
+
+        return entity;
+    }
+
+    /**
+     * Actualiza una entidad {{ entity.name }} existente a partir de los datos de un RequestDTO.
+     */
+    public void updateEntityFromDTO({{ entity.name }}RequestDTO dto, {{ entity.name }} entity) {
+        if (dto == null || entity == null) {
+            return;
+        }
+
+{% for attr in entity.attributes %}
+    {% if not attr.is_id or not attr.is_generated %}
+        entity.{{ attr.setter_name }}(dto.{{ attr.getter_name }}());
+    {% endif %}
+{% endfor %}
+    }
+}

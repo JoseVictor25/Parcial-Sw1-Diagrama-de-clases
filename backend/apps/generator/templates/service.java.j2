@@ -1,0 +1,22 @@
+package {{ base_package }}.service;
+
+import {{ base_package }}.dto.{{ entity.name }}RequestDTO;
+import {{ base_package }}.dto.{{ entity.name }}ResponseDTO;
+import java.util.List;
+
+/**
+ * Interfaz de servicio para la gestión de {{ entity.name }}.
+ * Opera exclusivamente con DTOs en la capa de negocio.
+ */
+public interface {{ entity.name }}Service {
+
+    List<{{ entity.name }}ResponseDTO> findAll();
+
+    {{ entity.name }}ResponseDTO findById(Long id);
+
+    {{ entity.name }}ResponseDTO create({{ entity.name }}RequestDTO requestDTO);
+
+    {{ entity.name }}ResponseDTO update(Long id, {{ entity.name }}RequestDTO requestDTO);
+
+    void delete(Long id);
+}

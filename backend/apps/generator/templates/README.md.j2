@@ -1,0 +1,59 @@
+# {{ project_name }} — Backend Spring Boot (5 Capas)
+
+Proyecto backend generado automáticamente a partir del diagrama de clases UML mediante **UML Tool**.
+
+## 🏗️ Arquitectura de 5 Capas
+El código sigue las mejores prácticas de la arquitectura en capas con Spring Boot:
+1. **`entity/`**: Entidades persistentes con anotaciones Jakarta Persistence (JPA).
+2. **`dto/`**: Objetos de transferencia de datos (`RequestDTO` y `ResponseDTO`) para no exponer las entidades JPA directamente.
+3. **`mapper/`**: Mapeadores para la conversión segura y limpia entre entidades y DTOs.
+4. **`repository/`**: Repositorios de acceso a datos que extienden `JpaRepository`.
+5. **`service/` & `service/impl/`**: Lógica de negocio transaccional que opera con DTOs.
+6. **`controller/`**: Controladores REST con operaciones CRUD completas (`GET`, `POST`, `PUT`, `DELETE`).
+
+---
+
+## 🚀 Requisitos Previos
+- **Java 17** o superior (`java -version`)
+- **Maven 3.8+** (`mvn -version`)
+
+---
+
+## ▶️ Ejecución Rápida
+En la raíz del proyecto desempaquetado ejecuta:
+
+```bash
+mvn spring-boot:run
+```
+
+O si deseas compilar y empaquetar en un `.jar`:
+```bash
+mvn clean package
+java -jar target/{{ artifact_id }}-1.0.0.jar
+```
+
+La aplicación arrancará por defecto en:
+👉 `http://localhost:8080`
+
+---
+
+## 💾 Base de Datos H2 (En memoria)
+Para facilitar pruebas inmediatas sin configurar PostgreSQL o MySQL, el proyecto incluye **H2 Database en memoria**.
+- **Consola H2 Web:** `http://localhost:8080/h2-console`
+- **JDBC URL:** `jdbc:h2:mem:{{ database_name }}`
+- **Usuario:** `sa`
+- **Contraseña:** *(vacío)*
+
+*(Para cambiar a PostgreSQL o MySQL, edita el archivo `src/main/resources/application.properties`)*
+
+---
+
+## 📡 Endpoints REST Generados
+{% for entity in entities %}
+### {{ entity.name }}
+- `GET    /api/{{ entity.url_path }}` — Listar todos
+- `GET    /api/{{ entity.url_path }}/{id}` — Obtener por ID
+- `POST   /api/{{ entity.url_path }}` — Crear nuevo
+- `PUT    /api/{{ entity.url_path }}/{id}` — Actualizar
+- `DELETE /api/{{ entity.url_path }}/{id}` — Eliminar
+{% endfor %}

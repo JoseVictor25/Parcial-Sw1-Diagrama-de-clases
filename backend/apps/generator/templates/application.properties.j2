@@ -1,0 +1,22 @@
+# ===================================================================
+# Configuración del Servidor y Base de Datos PostgreSQL
+# Generado automáticamente por UMLCraft
+# ===================================================================
+server.port=8080
+spring.application.name={{ artifact_id | default('hospital') }}
+
+# Configuración del DataSource para PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# Configuración de Spring Data JPA / Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Configuración de Jackson para serialización JSON
+spring.jackson.serialization.fail-on-empty-beans=false
+

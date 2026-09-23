@@ -1,0 +1,20 @@
+package {{ base_package }};
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * Clase principal de inicio para {{ project_name }}.
+ * Generada automáticamente por UML Tool.
+ */
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+        System.out.println("==================================================================");
+        System.out.println("🚀 {{ project_name }} iniciado exitosamente en http://localhost:8080");
+        System.out.println("📄 Consola H2: http://localhost:8080/h2-console");
+        System.out.println("==================================================================");
+    }
+}
